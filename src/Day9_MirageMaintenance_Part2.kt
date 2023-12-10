@@ -1,5 +1,3 @@
-import kotlin.math.abs
-
 fun main() {
     val rawInput = """
 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44
@@ -204,51 +202,34 @@ fun main() {
 2 14 48 123 269 540 1041 1977 3746 7123 13626 26241 50859 99127 194065 380935 747714 1462444 2839116 5450095 10312017
         """
     val lines = splitLines(rawInput);
-    var predictedNumbersForLine : MutableList<Long> = mutableListOf()
+    val predictedNumbersAllLines : MutableList<Long> = mutableListOf()
+
     for (line in lines) {
-        var numbers : MutableList<MutableList<Long>> = mutableListOf()
-        var lineNumbers = extractNumbersFromLine(line)
-        numbers.add(lineNumbers)
-        println(lineNumbers)
-        while(lineNumbers.distinct().count() != 1){
-            var diffs : MutableList<Long> = mutableListOf()
-            lineNumbers.forEachIndexed { i, l ->
-                if(i > 0) {
-                    diffs.add(lineNumbers[i] - lineNumbers[i - 1])
-                }
+        //build diffs
+        var lineNums = extractNumbersFromLine(line)
+        var lineNumsAndDiffs : MutableList<MutableList<Long>> = mutableListOf()
+        lineNumsAndDiffs.add(lineNums)
+        println(lineNums)
+        while(lineNums.distinct().count() != 1){
+            val diffs : MutableList<Long> = mutableListOf()
+            lineNums.forEachIndexed { i, l ->
+                if(i > 0) diffs.add(lineNums[i] - lineNums[i - 1])
             }
-            numbers.add(diffs)
-            lineNumbers = diffs
-            println(lineNumbers)
+            lineNumsAndDiffs.add(diffs)
+            lineNums = diffs
+            println(lineNums)
         }
-
-        println("extrapolating")
-
         //extrapolate
-        var predictedNumbers : MutableList<Long> = mutableListOf()
-        var numbersReversed = numbers.reversed()
-
-
-        numbersReversed.forEachIndexed { index, longs ->
-            val reversedLongs = longs.reversed()
-            var predictedNum : Long = reversedLongs[0]
-            if(index == 0 ){
-                predictedNumbers.add(predictedNum)
-            }else{
-                predictedNum = reversedLongs.last() - predictedNumbers[index-1]
-                predictedNumbers.add(predictedNum)
-            }
-            longs.add(predictedNum)
-            println(longs)
+        val predictedNumbers : MutableList<Long> = mutableListOf()
+        lineNumsAndDiffs.reversed().forEachIndexed { index, nums ->
+            val reversedNums = nums.reversed()
+            var predictedNum : Long = reversedNums[0]
+            if(index > 0 ) predictedNum = reversedNums.last() - predictedNumbers[index-1]
+            predictedNumbers.add(predictedNum)
         }
-
-        predictedNumbersForLine.add(predictedNumbers.last())
-
+        predictedNumbersAllLines.add(predictedNumbers.last())
     }
-
-
-
-    var result = predictedNumbersForLine.sum()
+    val result = predictedNumbersAllLines.sum()
 
     println("Result= $result")
 }
