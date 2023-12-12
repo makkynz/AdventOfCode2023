@@ -144,7 +144,7 @@ FLL7JL|LF-77.L.|7.L7.LF|7FJL|FLFL|J|-7----7.LJF-F.FL-7-LLL||7F|FLL-J--7JLJ-77F|.
     val lines = splitLines(rawInput);
     val pipes : MutableList<Pipe> = extractPipes(lines)
     val sPipe = pipes.single { it.type == 'S' }
-    var pipesAdjToS = extractAdjacentConnectablePipes(sPipe, pipes, sPipe)
+    val pipesAdjToS = extractAdjacentConnectablePipes(sPipe, pipes, sPipe)
     var previousPipe = sPipe
     var steps = 0;
     for (pipeAdjTo in pipesAdjToS) {
@@ -186,33 +186,29 @@ fun extractPipes(lines: Array<String>): MutableList<Pipe> {
 }
 
 fun getNextPipe(pipe: Pipe, pipes: MutableList<Pipe>, previousPipe: Pipe) : Pipe? {
-    var adjacentPipes : MutableList<Pipe> = extractAdjacentConnectablePipes(pipe, pipes, previousPipe)
+    val adjacentPipes : MutableList<Pipe> = extractAdjacentConnectablePipes(pipe, pipes, previousPipe)
 
-    if(adjacentPipes.count() == 1){
-        return adjacentPipes[0]
+    return if(adjacentPipes.count() == 1){
+        adjacentPipes[0]
     }else{
-       return null
+        null
     }
 }
 fun extractAdjacentConnectablePipes(pipe: Pipe, pipes: MutableList<Pipe>, previousPipe: Pipe): MutableList<Pipe> {
-   var adjacentPipes : MutableList<Pipe> = mutableListOf()
+    val adjacentPipes: MutableList<Pipe> = mutableListOf()
 
-    var x = pipe.xy.first
-    var y = pipe.xy.second
+    val x = pipe.xy.first
+    val y = pipe.xy.second
 
-    val west = pipes.find { it.xy == Pair(x-1,y) && it.xy != previousPipe.xy }
-    val east = pipes.find { it.xy == Pair(x+1,y)  && it.xy != previousPipe.xy}
-    val north = pipes.find { it.xy == Pair(x,y-1)  && it.xy != previousPipe.xy}
-    val south = pipes.find { it.xy == Pair(x,y+1)  && it.xy != previousPipe.xy}
+    val west = pipes.find { it.xy == Pair(x - 1, y) && it.xy != previousPipe.xy }
+    val east = pipes.find { it.xy == Pair(x + 1, y) && it.xy != previousPipe.xy }
+    val north = pipes.find { it.xy == Pair(x, y - 1) && it.xy != previousPipe.xy }
+    val south = pipes.find { it.xy == Pair(x, y + 1) && it.xy != previousPipe.xy }
 
-
-
-    if(west != null && ( isConnectable(pipe, west, "west")))  adjacentPipes.add(west)
-    if(east != null && ( isConnectable(pipe, east, "east")))  adjacentPipes.add(east)
-    if(north != null && ( isConnectable(pipe, north, "north")))  adjacentPipes.add(north)
-    if(south != null && ( isConnectable(pipe, south, "south")))  adjacentPipes.add(south)
-
-
+    if (west != null && isConnectable(pipe, west, "west")) adjacentPipes.add(west)
+    if (east != null && isConnectable(pipe, east, "east")) adjacentPipes.add(east)
+    if (north != null && isConnectable(pipe, north, "north")) adjacentPipes.add(north)
+    if (south != null && isConnectable(pipe, south, "south")) adjacentPipes.add(south)
 
     return adjacentPipes
 }
@@ -225,13 +221,6 @@ L is a 90-degree bend connecting north and east.
 J is a 90-degree bend connecting north and west.
 7 is a 90-degree bend connecting south and west.
 F is a 90-degree bend connecting south and east.
-
-..F7.
-.FJ|.
-SJ.L7
-|F--J
-LJ...
-
      */
 
     if(pipeA.type == '|' && (direction == "west" || direction == "east")) return false
@@ -268,6 +257,5 @@ LJ...
     return false
 
 }
-
 
  data class Pipe(val type : Char, val xy: Pair<Int,Int>, var connectedPipes : MutableList<Pipe> = mutableListOf())
