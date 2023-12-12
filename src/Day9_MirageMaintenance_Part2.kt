@@ -222,7 +222,7 @@ fun main() {
         //extrapolate
         val predictedNumbers : MutableList<Long> = mutableListOf()
         lineNumsAndDiffs.reversed().forEachIndexed { index, nums ->
-            val reversedNums = nums.reversed()
+            val reversedNums = nums
             var predictedNum : Long = reversedNums[0]
             if(index > 0 ) predictedNum = reversedNums.last() - predictedNumbers[index-1]
             predictedNumbers.add(predictedNum)
